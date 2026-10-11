@@ -1,0 +1,4 @@
+interface:
+  display_name: "QMock"
+  short_description: "Set up API mocks, overrides, and isolated Vite tests"
+  default_prompt: "Use $qmock to set up or update API mocks and test scenarios in this project."

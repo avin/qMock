@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8"><title>QMock example</title></head>
+  <body>
+    <h1>QMock example</h1>
+    <p><a href="/__apiMock">Manage API mock overrides</a></p>
+    <button id="load">Load API response</button>
+    <pre id="response"></pre>
+    <script type="module">
+      document.querySelector('#load').addEventListener('click', async () => {
+        const response = await fetch('/api/demo');
+        document.querySelector('#response').textContent = JSON.stringify(await response.json(), null, 2);
+      });
+    </script>
+  </body>
+</html>

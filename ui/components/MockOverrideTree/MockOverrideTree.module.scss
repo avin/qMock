@@ -1,0 +1,177 @@
+$chevron-size: 12px;
+$summary-inline-padding: 4px;
+$guide-color: #9ca3af;
+$guide-gutter: 16px;
+$guide-join: 14px;
+$guide-offset: $summary-inline-padding + $chevron-size * 0.5;
+$guide-arrow-gap: 8px;
+$tree-gap: 4px;
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: $tree-gap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  > .tree {
+    position: relative;
+    padding-inline-start: $guide-gutter;
+    margin-inline-start: $guide-offset;
+
+    > li {
+      position: relative;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        inset-inline-start: -$guide-gutter;
+        pointer-events: none;
+        background-color: $guide-color;
+      }
+
+      &::before {
+        inset-block-start: $guide-join;
+        width: calc(#{$guide-gutter} - 4px);
+        height: 1px;
+      }
+
+      &::after {
+        inset-block-start: 0;
+        inset-block-end: -$tree-gap;
+        width: 1px;
+      }
+
+      &:first-child::after {
+        inset-block-start: calc(-#{$guide-join} + #{$guide-arrow-gap});
+      }
+
+      &:last-child::after {
+        inset-block-end: auto;
+        height: $guide-join;
+      }
+
+      &:first-child:last-child::after {
+        height: calc(#{$guide-join} * 2 - #{$guide-arrow-gap});
+      }
+    }
+  }
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 2px $summary-inline-padding;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  user-select: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: $chevron-size;
+  height: $chevron-size;
+  margin-inline-end: 6px;
+  transform: rotate(-90deg);
+
+  svg {
+    display: block;
+  }
+
+  :global(html[dir="rtl"]) & {
+    transform: rotate(90deg);
+  }
+
+  details[open] > .summary > & {
+    transform: rotate(0deg);
+  }
+}
+
+.leaf {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+  background: #ffffff;
+  user-select: none;
+  cursor: grab;
+  &.isActive {
+    opacity: 0.7;
+  }
+}
+
+.isDragging {
+  opacity: 0.45;
+}
+
+.dragLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  appearance: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.dragHandle {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 14px;
+  margin-block-start: 3px;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #6b7280 1px, transparent 1.2px);
+  background-color: transparent;
+  background-size: 4px 4px;
+  background-position: 0 1px;
+}
+
+.text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+  pointer-events: none;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.description,
+.activeMark {
+  color: #374151;
+  font-size: 12px;
+  line-height: 1.3;
+}

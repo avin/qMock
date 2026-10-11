@@ -1,0 +1,75 @@
+.positioner {
+  z-index: 1200;
+}
+
+.popup {
+  min-width: 200px;
+  max-width: 280px;
+  padding: 10px;
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.4;
+  background: #ffffff;
+  border: 1px solid #4b5563;
+  box-shadow: 5px 5px 5px rgb(15 23 42 / 20%);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.fields {
+  display: grid;
+  gap: 8px;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+}
+
+.booleanField {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #111827;
+}
+
+.control {
+  min-width: 0;
+  padding: 2px 4px;
+  border: 1px solid #4b5563;
+  border-radius: 2px;
+  color: inherit;
+  font: inherit;
+  background: #ffffff;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #4b5563;
+  border-radius: 2px;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  background: #ffffff;
+  cursor: pointer;
+
+  img {
+    display: block;
+    flex-shrink: 0;
+  }
+}

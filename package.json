@@ -1,0 +1,108 @@
+{
+  "name": "@avinlab/qmock",
+  "version": "0.1.0",
+  "description": "Vite API mocks with a prebuilt override management dashboard and isolated test scenarios",
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/browser.js",
+      "import": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": "./dist/vitest.js"
+    },
+    "./playwright": {
+      "types": "./dist/playwright.d.ts",
+      "import": "./dist/playwright.js"
+    },
+    "./cypress": {
+      "types": "./dist/cypress.d.ts",
+      "browser": "./dist/cypress.js",
+      "import": "./dist/cypress.js",
+      "default": "./dist/cypress.js"
+    },
+    "./cypress/node": {
+      "types": "./dist/cypressNode.d.ts",
+      "import": "./dist/cypressNode.js",
+      "default": "./dist/cypressNode.js"
+    },
+    "./catalog": {
+      "types": "./dist/overrideCatalog.d.ts",
+      "import": "./dist/overrideCatalog.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "qmock": "dist/cli.js"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@playwright/test": "*",
+    "cypress": "*",
+    "vite": "*"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    },
+    "cypress": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && vite build --config ui/vite.config.ts && node scripts/build-notices.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.ui.json",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:package": "node tests/package-smoke.mjs",
+    "test:playwright-compat": "node tests/playwright-compat.mjs",
+    "test:cypress": "node tests/cypress-smoke.mjs",
+    "check": "npm run typecheck && npm test",
+    "verify": "npm run check && npm run build && npm run test:e2e && npm run test:package && npm run test:cypress",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@base-ui/react": "^1.6.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@playwright/test": "^1.58.2",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "clsx": "^2.1.1",
+    "cypress": "^16.1.1",
+    "jsdom": "^26.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sass": "^1.102.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "jiti": "^2.7.0"
+  }
+}
