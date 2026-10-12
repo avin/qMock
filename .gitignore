@@ -8,3 +8,6 @@ coverage/
 examples/basic/.mock-overrides.json
 .idea/
 .vscode/
+docs/node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
