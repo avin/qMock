@@ -72,14 +72,14 @@ try {
   assert.deepEqual(await (await request('/api/demo')).json(), { ready: true });
   const catalog = await (await request('/__apiMocks/overrides')).json();
   assert.equal(flattenOverrideLeaves(catalog.tree)[0].id, 'failure');
-  const htmlResponse = await request('/__apiMock'); assert.equal(htmlResponse.status, 200); assert.match(htmlResponse.headers.get('content-type'), /text\/html/);
+  const htmlResponse = await request('/__apiMocks'); assert.equal(htmlResponse.status, 200); assert.match(htmlResponse.headers.get('content-type'), /text\/html/);
   const html = await htmlResponse.text(); assert.match(html, /<div id="root">/);
-  const assets = [...html.matchAll(/(?:src|href)="(\/__apiMock\/assets\/[^" ]+)"/g)].map(match => match[1]); assert(assets.length >= 2);
+  const assets = [...html.matchAll(/(?:src|href)="(\/__apiMocks\/assets\/[^" ]+)"/g)].map(match => match[1]); assert(assets.length >= 2);
   for (const url of assets) { const response = await request(url); assert.equal(response.status, 200); assert((await response.text()).length > 100); }
-  assert.equal((await request('/__apiMock/assets/missing.js')).status, 404);
-  assert.equal((await request('/__apiMock', { method: 'POST' })).status, 405);
-  assert.equal((await request('/__apiMock/%2e%2e%2findex.js')).status, 404);
-  const head = await request('/__apiMock', { method: 'HEAD' }); assert.equal(head.status, 200); assert.equal(await head.text(), '');
+  assert.equal((await request('/__apiMocks/assets/missing.js')).status, 404);
+  assert.equal((await request('/__apiMocks', { method: 'POST' })).status, 405);
+  assert.equal((await request('/__apiMocks/%2e%2e%2findex.js')).status, 404);
+  const head = await request('/__apiMocks', { method: 'HEAD' }); assert.equal(head.status, 200); assert.equal(await head.text(), '');
 } finally { await server.close(); }
 `);
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });

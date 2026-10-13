@@ -1,7 +1,7 @@
 # The dashboard
 
 The dashboard is a standalone page served by the Vite dev server at
-**`/__apiMock`**, for example `http://localhost:5173/__apiMock`. It is where
+**`/__apiMocks`**, for example `http://localhost:5173/__apiMocks`. It is where
 overrides become active scenarios.
 
 ## Layout

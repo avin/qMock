@@ -14,7 +14,7 @@ async function drag(page: Page, source: Locator, target: Locator) {
 
 test.beforeEach(async ({ request, page }) => {
   await request.put('/__apiMocks/overrides', { data: { active: [] } });
-  await page.goto('/__apiMock');
+  await page.goto('/__apiMocks');
   await expect(page.getByRole('heading', { name: 'Mock overrides' })).toBeVisible();
 });
 

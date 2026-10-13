@@ -99,7 +99,7 @@ go to a real backend through Vite's `server.proxy`.
 
 ## 5. Open the dashboard
 
-Visit `http://localhost:5173/__apiMock`. It is
+Visit `http://localhost:5173/__apiMocks`. It is
 empty for now, because you have not written any overrides yet. That is the next
 step.
 

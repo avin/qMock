@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 export default defineConfig({
   root: fileURLToPath(new URL(".", import.meta.url)),
-  base: "/__apiMock/",
+  base: "/__apiMocks/",
   resolve: {
     alias: {
       "@ui": fileURLToPath(new URL(".", import.meta.url)),

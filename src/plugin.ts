@@ -28,6 +28,12 @@ type MockModule = {
 };
 
 export const overridesPath = "/__apiMocks/overrides";
+const dashboardPath = "/__apiMocks";
+
+function isDashboardPath(pathname: string) {
+  if (pathname === overridesPath || pathname === testOverridePath) return false;
+  return pathname === dashboardPath || pathname.startsWith(`${dashboardPath}/`);
+}
 
 function sendJson(response: ServerResponse, body: unknown, statusCode = 200) {
   response.statusCode = statusCode;
@@ -179,7 +185,7 @@ export function apiMockPlugin(options: ApiMockPluginOptions = {}): Plugin {
           const url = new URL(incoming.url ?? "/", "http://localhost");
           const { pathname } = url;
           const method = (incoming.method ?? "GET").toUpperCase();
-          if (pathname === "/__apiMock" || pathname.startsWith("/__apiMock/")) {
+          if (isDashboardPath(pathname)) {
             await serveUi(incoming, outgoing, pathname);
             return;
           }
@@ -318,7 +324,7 @@ async function serveUi(request: Connect.IncomingMessage, response: ServerRespons
     sendJson(response, { error: "Method not allowed" }, 405);
     return;
   }
-  const relative = pathname === "/__apiMock" || pathname === "/__apiMock/" ? "index.html" : pathname.slice("/__apiMock/".length);
+  const relative = pathname === dashboardPath || pathname === `${dashboardPath}/` ? "index.html" : pathname.slice(`${dashboardPath}/`.length);
   let decoded: string;
   try { decoded = decodeURIComponent(relative); } catch { sendJson(response, { error: "Invalid asset path" }, 400); return; }
   const root = fileURLToPath(new URL("./ui/", import.meta.url));

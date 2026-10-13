@@ -53,7 +53,7 @@ export default defineMockOverride({
 });
 ```
 
-Запустите Vite, откройте `/__apiMock` и перетащите **User profile** в список
+Запустите Vite, откройте `/__apiMocks` и перетащите **User profile** в список
 активных. В тесте передайте тот же файл в `createMockScope`, `applyMocks` или
 `registerMocks`.
 

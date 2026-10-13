@@ -40,7 +40,7 @@ export default defineMockConfiguration({
 
 Requests must reach the Vite development origin. Use same-origin URLs or adapt
 the application's existing development API URL setting. Unmatched routes pass
-through to subsequent middleware and proxies. Mocks and `/__apiMock` are available
+through to subsequent middleware and proxies. Mocks and `/__apiMocks` are available
 only on the development server, not in production builds or `vite preview`.
 
 For an existing mock layout, configure `apiMockPlugin({ handlers, overrides,
@@ -120,7 +120,7 @@ Return a full envelope to change status or switch payload formats. The body
 argument is `JsonObject | undefined`; use `context.response` for other payload
 shapes. New or disabled routes provide `undefined` as the modifier body.
 
-In `/__apiMock`, search or expand the catalog and drag a scenario into **Active**.
+In `/__apiMocks`, search or expand the catalog and drag a scenario into **Active**.
 The gear button edits parameters; the checkbox toggles the scenario. Reorder
 active rows to change composition, or drag a row back to remove it. Overrides run
 top to bottom; later modifiers receive earlier results. Disabled entries retain
@@ -311,7 +311,7 @@ rather than Node-only request APIs or dependencies.
 
 ## Verify the requested behavior
 
-For integration changes, request a known mock endpoint, open `/__apiMock`, and
+For integration changes, request a known mock endpoint, open `/__apiMocks`, and
 check that unmatched API requests still reach the configured backend or proxy.
 For scenarios, verify the payload and status, parameter changes, and any relevant
 ordering or fall-through behavior. For test changes, verify scope isolation and

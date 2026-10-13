@@ -55,7 +55,7 @@ Base handler      →  { id: 'demo', name: 'Demo User' }
 
 | Where                      | How scenarios are chosen                         | Persisted?                           |
 | -------------------------- | ------------------------------------------------ | ------------------------------------ |
-| **Development** (Vite)     | You pick them in the dashboard at `/__apiMock`   | Saved to `.mock-overrides.json`      |
+| **Development** (Vite)     | You pick them in the dashboard at `/__apiMocks`   | Saved to `.mock-overrides.json`      |
 | **Tests** (Vitest, Playwright, Cypress) | Each test lists the overrides it needs | No. Every test starts from a clean slate |
 
 Dashboard settings never leak into tests, and test scenarios never touch your

@@ -159,14 +159,14 @@ describe('real Vite middleware', () => {
     const app = await start({ 'index.html': '<html><body>Production application</body></html>' });
     await build({ root: app.root, configFile: false, logLevel: 'silent', plugins: [apiMockPlugin()], build: { minify: false } });
     const html = readFileSync(path.join(app.root, 'dist/index.html'), 'utf8');
-    expect(html).toContain('Production application'); expect(html).not.toContain('__apiMock');
+    expect(html).toContain('Production application'); expect(html).not.toContain('__apiMocks');
     expect(existsSync(path.join(app.root, 'dist/ui'))).toBe(false);
     const server = await preview({ root: app.root, configFile: false, appType: 'custom', logLevel: 'silent', plugins: [apiMockPlugin()], preview: { host: '127.0.0.1', port: 0 } });
     try {
       const address = server.httpServer.address() as import('node:net').AddressInfo;
       const base = `http://127.0.0.1:${address.port}`;
       expect((await fetch(base + '/__apiMocks/overrides')).status).toBe(404);
-      expect((await fetch(base + '/__apiMock')).status).toBe(404);
+      expect((await fetch(base + '/__apiMocks')).status).toBe(404);
       expect((await fetch(base + '/api/demo')).status).toBe(404);
     } finally { await new Promise<void>((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve())); }
   });

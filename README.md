@@ -1,6 +1,6 @@
 # QMock
 
-API mocks for Vite with a standalone override dashboard at **`/__apiMock`**.
+API mocks for Vite with a standalone override dashboard at **`/__apiMocks`**.
 Organize mocks in a nested catalog, create
 parameterized scenarios, activate and reorder them with drag and drop,
 save your settings, and run tests with independent mock responses.
@@ -41,7 +41,7 @@ export default defineMockConfiguration({
 });
 ```
 
-Start Vite and open `/__apiMock`. Make requests to the same Vite origin, such as
+Start Vite and open `/__apiMocks`. Make requests to the same Vite origin, such as
 `fetch('/api/user')`. If your application uses an absolute backend URL, configure
 its development API URL to point to Vite. Unmatched routes continue to Vite's
 normal middleware and proxies.
