@@ -129,8 +129,8 @@ without restarting Vite.
 
 ## Reuse mocks in tests
 
-Use `@avinlab/qmock/vitest` for application `fetch` calls in Vitest and
-`@avinlab/qmock/playwright` or `@avinlab/qmock/cypress` for browser requests.
+Use `@avinlab/qmock/vitest` for application `fetch` and `XMLHttpRequest` calls in
+Vitest and `@avinlab/qmock/playwright` or `@avinlab/qmock/cypress` for browser requests.
 All run handlers and overrides
 without a Vite development server or a mock API server. Saved dashboard state is
 irrelevant to test scenarios.
@@ -181,9 +181,12 @@ test('handles an unavailable user service', async () => {
 ```
 
 Use `await createMockScope()` for base handlers only. Keep all awaited application
-work inside `scope.run`; the fetch interception is cleaned up when the callback
-returns or throws. Concurrent and nested scopes stay isolated. Choose this
-adapter for `fetch`; browser networking belongs in Playwright or Cypress tests.
+work inside `scope.run`; interception is cleaned up when the callback returns or
+throws. Concurrent and nested scopes stay isolated. XHR uses the same handlers
+and overrides as `fetch`, including clients such as Axios with its XHR adapter.
+Use an environment that provides `XMLHttpRequest`, such as `jsdom`, for XHR
+tests; QMock does not add XHR to plain Node.js. Use Playwright or Cypress for
+tests in a real browser.
 
 For fixture-based tests, extend the project's Vitest test with `withMocks`:
 
@@ -205,7 +208,8 @@ test('uses a custom user', async ({ mocks }) => {
 
 Supply scenario options to `withMocks(options)` for a suite's default scenario.
 The fixture creates the scope and cleans up after the test; use `mocks.run` to
-intercept application fetch calls, or `mocks.fetch` to request a mock directly.
+intercept application `fetch` and XHR calls, or `mocks.fetch` to request a mock
+directly.
 
 ### Playwright
 

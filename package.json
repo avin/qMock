@@ -1,6 +1,6 @@
 {
   "name": "@avinlab/qmock",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Vite API mocks with a prebuilt override management dashboard and isolated test scenarios",
   "type": "module",
   "license": "MIT",
