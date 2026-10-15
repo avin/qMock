@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
 import {
   createMockScope as createCoreMockScope,
   createMockRequest,
@@ -9,7 +10,7 @@ import {
 export type { MockScopeOptions } from "./testing.js";
 
 export interface VitestMockScope extends MockScope {
-  /** Intercepts fetch for this callback, including its asynchronous work. */
+  /** Intercepts fetch and XMLHttpRequest for this callback, including its asynchronous work. */
   run<T>(callback: () => T | Promise<T>): Promise<T>;
 }
 
@@ -21,6 +22,7 @@ interface ActiveScope {
 const currentScope = new AsyncLocalStorage<ActiveScope>();
 let activeRuns = 0;
 let originalFetch: typeof globalThis.fetch;
+let xhrInterceptor: XMLHttpRequestInterceptor | undefined;
 
 function toRequest(input: Parameters<typeof fetch>[0], init?: RequestInit): Request {
   return createMockRequest(input instanceof Request ? input.clone() : input, init);
@@ -41,29 +43,39 @@ const dispatch: typeof globalThis.fetch = async (input, init) => {
   return fallback(input, init);
 };
 
-function installFetch(): void {
+function installTransports(): void {
   if (activeRuns === 0) {
     originalFetch = globalThis.fetch;
     globalThis.fetch = dispatch;
+    xhrInterceptor = new XMLHttpRequestInterceptor();
+    xhrInterceptor.on("request", async ({ request, controller }) => {
+      const context = currentScope.getStore();
+      if (!context?.active) return;
+      const response = await context.scope.handle(request.clone());
+      if (response !== undefined) controller.respondWith(response);
+    });
+    xhrInterceptor.apply();
   }
   activeRuns += 1;
 }
 
-function restoreFetch(): void {
+function restoreTransports(): void {
   activeRuns -= 1;
-  if (activeRuns === 0 && globalThis.fetch === dispatch) {
-    globalThis.fetch = originalFetch;
+  if (activeRuns === 0) {
+    xhrInterceptor?.dispose();
+    xhrInterceptor = undefined;
+    if (globalThis.fetch === dispatch) globalThis.fetch = originalFetch;
   }
 }
 
-/** Creates an isolated fetch scenario without starting a server. */
+/** Creates an isolated fetch and XMLHttpRequest scenario without starting a server. */
 export async function createMockScope(options: MockScopeOptions = {}): Promise<VitestMockScope> {
   const scope = await createCoreMockScope(options);
   let scopeRuns = 0;
   return {
     ...scope,
     async run<T>(callback: () => T | Promise<T>): Promise<T> {
-      installFetch();
+      installTransports();
       scopeRuns += 1;
       const context: ActiveScope = { scope, active: true };
       try {
@@ -74,7 +86,7 @@ export async function createMockScope(options: MockScopeOptions = {}): Promise<V
         try {
           if (scopeRuns === 0) await scope.clear();
         } finally {
-          restoreFetch();
+          restoreTransports();
         }
       }
     },
@@ -83,7 +95,7 @@ export async function createMockScope(options: MockScopeOptions = {}): Promise<V
 
 /**
  * Use as the mocks fixture in Vitest's test.extend().
- * Call mocks.fetch() directly, or mocks.run() to intercept application fetch calls.
+ * Call mocks.fetch() directly, or mocks.run() to intercept application fetch and XHR calls.
  */
 export function withMocks(options: MockScopeOptions = {}) {
   return async ({}: object, use: (scope: VitestMockScope) => Promise<void>): Promise<void> => {

@@ -1,7 +1,7 @@
 # Vitest
 
 Import from `@avinlab/qmock/vitest`. Vitest tests do not need a browser or
-server: QMock intercepts `fetch` for the duration of a callback.
+server: QMock intercepts `fetch` and `XMLHttpRequest` for the duration of a callback.
 
 ## Your first test
 
@@ -26,7 +26,7 @@ test('handles a service error', async () => {
 What happens:
 
 1. `createMockScope` loads your base handlers and applies the listed overrides.
-2. Inside `scope.run`, application calls to `fetch` use the scope's mocks.
+2. Inside `scope.run`, application calls to `fetch` and `XMLHttpRequest` use the scope's mocks.
 3. When the callback finishes or throws, the scope is removed.
 
 ### Rules for `scope.run`
@@ -35,7 +35,28 @@ What happens:
   happens after the callback returns no longer sees the mocks.
 - **Parallel and nested runs stay independent.** Two tests running concurrently
   each see their own scenario.
-- **Unmatched requests use the original `fetch`.**
+- **Unmatched requests use the original transport** (`fetch` or `XMLHttpRequest`).
+
+### XMLHttpRequest
+
+XHR calls inside `scope.run` use the same handlers and overrides as `fetch`.
+This also covers clients that use XHR, such as Axios with its XHR adapter.
+Use a test environment that provides `XMLHttpRequest`, such as `jsdom`;
+QMock does not add XHR to the plain Node.js environment.
+
+```ts
+await scope.run(async () => {
+  const user = await new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/api/user');
+    request.responseType = 'json';
+    request.onload = () => resolve(request.response);
+    request.onerror = () => reject(new Error('Request failed'));
+    request.send();
+  });
+  expect(user).toEqual({ id: 'demo', name: 'Demo User' });
+});
+```
 
 ## Base handlers only
 

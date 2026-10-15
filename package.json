@@ -102,6 +102,7 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
+    "@mswjs/interceptors": "^0.45.8",
     "esbuild": "^0.28.2",
     "jiti": "^2.7.0"
   }

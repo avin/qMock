@@ -1,7 +1,7 @@
 # Vitest
 
 Импортируйте из `@avinlab/qmock/vitest`. Тестам Vitest не нужны ни браузер, ни
-сервер: QMock перехватывает `fetch` на время выполнения колбэка.
+сервер: QMock перехватывает `fetch` и `XMLHttpRequest` на время выполнения колбэка.
 
 ## Ваш первый тест
 
@@ -27,7 +27,7 @@ test('handles a service error', async () => {
 
 1. `createMockScope` загружает базовые обработчики и применяет перечисленные
    оверрайды.
-2. Внутри `scope.run` вызовы `fetch` в приложении используют моки этого scope.
+2. Внутри `scope.run` вызовы `fetch` и `XMLHttpRequest` в приложении используют моки этого scope.
 3. Когда колбэк завершается или бросает исключение, scope удаляется.
 
 ### Правила `scope.run`
@@ -36,7 +36,28 @@ test('handles a service error', async () => {
   колбэка.** Всё, что произойдёт после его возврата, моков уже не увидит.
 - **Параллельные и вложенные запуски остаются независимыми.** Два одновременно
   выполняющихся теста видят каждый свой сценарий.
-- **Запросы без совпадения используют исходный `fetch`.**
+- **Запросы без совпадения используют исходный транспорт** (`fetch` или `XMLHttpRequest`).
+
+### XMLHttpRequest
+
+XHR-запросы внутри `scope.run` используют те же обработчики и оверрайды, что и
+`fetch`. Это распространяется и на клиенты, использующие XHR, например Axios
+с XHR-адаптером. Нужна тестовая среда с `XMLHttpRequest`, например `jsdom`:
+QMock не добавляет XHR в обычную среду Node.js.
+
+```ts
+await scope.run(async () => {
+  const user = await new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/api/user');
+    request.responseType = 'json';
+    request.onload = () => resolve(request.response);
+    request.onerror = () => reject(new Error('Request failed'));
+    request.send();
+  });
+  expect(user).toEqual({ id: 'demo', name: 'Demo User' });
+});
+```
 
 ## Только базовые обработчики
 

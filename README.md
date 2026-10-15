@@ -203,10 +203,11 @@ test('handles a service error', async () => {
 });
 ```
 
-Inside `scope.run`, application calls to `fetch` use the scope's mocks. The scope
+Inside `scope.run`, application calls to `fetch` and `XMLHttpRequest` use the scope's mocks. The scope
 is removed when the callback completes or throws. Parallel and nested runs keep
 their scenarios independent. Await all work that should use the scope inside the
-callback. Unmatched requests use the original `fetch`.
+callback. Unmatched requests use the original transport. XHR interception requires
+an environment that provides `XMLHttpRequest`, such as `jsdom`.
 
 For base handlers only:
 
